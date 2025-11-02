@@ -1,0 +1,62 @@
+﻿--- 3 total projects for this class ---
+
+# Project 1 and 2:
+
+Kreirati Web server koji vrši određivanje prosečne dužine reči u okviru fajla. Svi zahtevi serveru se šalju preko browser-a korišćenjem GET metode. U zahtevu se kao parametar navodi naziv fajla. Server prihvata zahtev, pretražuje root folder i sve njegove podfoldere za zahtevani fajl i vrši izračunavanje. Ukoliko traženi fajl ne postoji, vratiti grešku korisniku. Takođe, ukoliko je reč o praznom fajlu, vratiti odgovarajuću poruku korisniku.
+
+Primer poziva serveru: http://localhost:5050/fajl.txt
+
+# Additional requirements for Project 1 and 2:
+
+Web server implementirati kao konzolnu aplikaciju koja loguje sve primljene zahteve i informacije o
+njihovoj obradi (da li je došlo do greške, da li je zahtev uspešno obrađen i ostale ključe detalje).
+Web server treba da kešira u memoriji odgovore na primljene zahteve, tako da u slučaju da stigne
+isti zahtev, prosleđuje se već pripremljeni odgovor. Kao klijentsku aplikaciju možete koristiti Web
+browser ili možete po potrebi kreirati zasebnu konzolnu aplikaciju. Za realizaciju koristiti funkcije
+iz biblioteke System.Threading, uključujući dostupne mehanizme za sinhronizaciju i zaključavanje.
+Dozvoljeno je korišćenje ThreadPool-a.
+
+
+# Project 3:
+
+Koristeći principe Reaktivnog programiranja i Project Gutenberg (Gutendex) API, implementirati
+aplikaciju za prikaz opisa knjiga određenog autora (summaries property). Za prikupljene opise
+implementirati Topic Modeling koristeći ML.NET bilbioteku. Prikazati dobijene rezultate.
+
+Web server implementirati kao konzolnu aplikaciju koja loguje sve primljene zahteve i informacije
+o njihovoj obradi (da li je došlo do greške, da li je zahtev uspešno obrađen i ostale ključe detalje).
+Kao klijentsku aplikaciju možete koristiti Web browser ili možete po potrebi kreirati zasebnu
+konzolnu aplikaciju.
+Za realizaciju koristiti biblioteku Reactive Extensions for .NET (Rx) i implementirati
+odgovarajuće paradigme Reaktivnog programiranja. Po defaultu, Rx je single-threaded rešenje.
+Implementacije koje uključuju rad sa multithreadingom i radom sa Schedulerima će biti ocenjenje
+većim brojem poena. Korišćenje Rx biblioteke je neophodno, dok po potrebi, možete uključiti i
+potrebne biblioteke zavisno od zahteva navedenih u zadacima. Biblioteke su date kao preporuka,
+dozvoljena je upotreba i drugih rešenja (na primer za Sentiment analizu, Topic Modeling). 
+
+Dokumentacija dostupna na linku: https://gutendex.com/
+
+# Technology that is specified for use in these projects: C#
+
+# Use short variables names where possible
+# When not, use simple names that are easy to understand
+# Write simple and clear code
+# Add comments in Serbian. Do not make them answer what the code does, but why it does it. Keep it informal
+# Follow best practices for C# programming
+# Follow best practices for web server implementation
+# Follow best practices for Reactive programming in C#
+# Follow best practices for ML.NET usage
+# Ensure code is efficient and optimized for performance
+# Handle errors and exceptions gracefully, providing meaningful Serbian messages to the user
+# Write unit tests for critical parts of the code
+# Ensure code is well-structured and modular for maintainability
+# Use appropriate design patterns where applicable
+# Ensure code adheres to SOLID principles
+# Use dependency injection where applicable
+# Ensure code is compatible with the latest version of .NET
+# Use asynchronous programming where applicable
+
+# Provide instructions for setting up and running the projects
+# Provide instructions for testing the projects
+# Provide instructions for deploying the projects
+# Provide instructions for using the projects
