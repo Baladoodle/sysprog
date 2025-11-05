@@ -1,4 +1,5 @@
-﻿using System.Reactive.Linq;
+﻿using System.Diagnostics;
+using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
 using Projekat3.Services;
 using Projekat3.Utils;
@@ -9,41 +10,70 @@ class Program
 {
     static async Task Main(string[] args)
     {
-        Console.Write("Unesi ime autora (npr. 'Shakespeare'): ");
-        var autor = Console.ReadLine() ?? "Shakespeare";
+        var mainThreadId = Environment.CurrentManagedThreadId;
+
+        // inicijalizacija servisa - api i ml
         var api = new ServisApi();
         var ml = new ServisMl();
-        var opisi = new List<string>();
 
-        Log.Rx("Stream pokrenut...\n");
+        while (true)
+        {
+            Console.Write("\nUnesi ime autora ('Shakespeare'): ");
+            var autor = Console.ReadLine()?.Trim();
 
-        // reactive pipeline sa ToTask() za await
-        var task = api.UzmiOpise(autor)
-            .Do(o =>
+            // timer krece posle unosa
+            var swTotal = Stopwatch.StartNew();
+
+            var opisi = new List<string>();
+            var lockObj = new object(); // thread safe lock
+
+            Log.Rx("Stream pokrenut...\n");
+
+            // reaktivni stream za uzimanje opisa knjiga
+            var swStream = Stopwatch.StartNew();
+            var task = api.UzmiOpise(autor).Do(o =>
             {
-                Log.Rx($"Primljen: {o[..Math.Min(50, o.Length)]}...");
-                opisi.Add(o);
+                var threadId = Environment.CurrentManagedThreadId;
+                lock (lockObj) // thread safe dodavanje
+                {
+                    opisi.Add(o);
+                }
             })
             .ToList() // sakupi sve u listu
             .ToTask(); // konvertuj u Task za await
 
-        try
-        {
-            await task;
-            Log.Rx($"\nStream završen. Ukupno: {opisi.Count} opisa\n");
+            try
+            {
+                await task; // čeka da se stream završi
+                swStream.Stop(); // zaustavi merenje vremena API poziva
 
-            // topic modeling
-            if (opisi.Count > 0)
-                ml.AnalizirajTeme(opisi);
-            else
-                Log.Info("Nema podataka");
-        }
-        catch (Exception ex)
-        {
-            Log.Err(ex.Message);
+                Log.Rx($"\nZavršeno. Ukupno: {opisi.Count} opisa");
+                Log.Perf($"Reactive stream: {swStream.ElapsedMilliseconds}ms");
+                Log.Perf($"Prosečno vreme po opisu: {(opisi.Count > 0 ? swStream.ElapsedMilliseconds / (double)opisi.Count : 0):F2}ms\n");
+
+                // topic modeling na zasebnom thread
+                if (opisi.Count > 0)
+                {
+                    await Task.Run(() => ml.AnalizirajTeme(opisi));
+                }
+                else
+                    Log.Info("Nema podataka");
+            }
+            catch (Exception ex)
+            {
+                swStream.Stop();
+                Log.Err(ex.Message);
+                Log.Perf($"Stream prekinut nakon {swStream.ElapsedMilliseconds}ms");
+            }
+
+            swTotal.Stop();
+
+            // konacni izveštaj
+            Log.Perf($"Ukupno vreme izvršavanja: {swTotal.ElapsedMilliseconds}ms");
+            Log.Perf($"Završeno na thread: {Environment.CurrentManagedThreadId}");
+            Console.WriteLine("\n" + new string('=', 60));
         }
 
-        Console.WriteLine("\nPritisni bilo koji taster...");
-        Console.ReadKey();
+        Log.Info("Program završen.");
     }
 }

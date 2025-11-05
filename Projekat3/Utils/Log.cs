@@ -36,4 +36,11 @@ public static class Log
         Console.WriteLine($"[API] {msg}");
         Console.ResetColor();
     }
+
+    public static void Perf(string msg)
+    {
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.WriteLine($"[PERF] {msg}");
+        Console.ResetColor();
+    }
 }

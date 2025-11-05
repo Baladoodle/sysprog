@@ -17,13 +17,16 @@ public class Knjiga
     public string? Naslov { get; set; }
     
     [JsonProperty("authors")]
- public List<Autor>? Autori { get; set; }
+    public List<Autor>? Autori { get; set; }
     
     [JsonProperty("subjects")]
     public List<string>? Teme { get; set; }
     
     [JsonProperty("bookshelves")]
     public List<string>? Police { get; set; }
+
+    [JsonProperty("description")]
+    public string? Opis { get; set; }
 }
 
 public class Autor
